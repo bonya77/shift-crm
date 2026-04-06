@@ -1,10 +1,12 @@
 package com.nabokab.shift_crm.service;
 
+import com.nabokab.shift_crm.model.Seller;
 import com.nabokab.shift_crm.model.Transaction;
 import com.nabokab.shift_crm.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -26,5 +28,13 @@ public class TransactionService {
 
     public List<Transaction> getTransactionBySeller(Long sellerId){
         return transactionRepository.findAllBySellerId(sellerId);
+    }
+
+    public Seller getMostProductiveSeller(LocalDateTime start, LocalDateTime end){
+        List<Seller> sellers = transactionRepository.findMostProductiveSellers(start, end);
+        return sellers.isEmpty() ? null : sellers.getFirst();
+    }
+    public List<Seller> getSellersWithSalesLessThan(LocalDateTime start, LocalDateTime end, java.math.BigDecimal minAmount){
+        return transactionRepository.findSellersWithSumLessThan(start, end, minAmount);
     }
 }

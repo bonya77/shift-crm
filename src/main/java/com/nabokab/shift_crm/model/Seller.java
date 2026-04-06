@@ -1,5 +1,6 @@
 package com.nabokab.shift_crm.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -30,5 +31,6 @@ public class Seller {
     private LocalDateTime registrationDate;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Transaction> transactions;
 }

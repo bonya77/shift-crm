@@ -1,5 +1,6 @@
 package com.nabokab.shift_crm.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -20,6 +21,7 @@ public class Transaction {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)
+    @JsonBackReference
     private Seller seller;
 
     @Column(nullable = false)
@@ -30,5 +32,6 @@ public class Transaction {
     private PaymentType paymentType;
 
     @Column(name = "transaction_date", nullable = false)
+
     private LocalDateTime transactionDate;
 }
