@@ -42,7 +42,7 @@ public class TransactionService {
         return transactionRepository.findSellersWithSumLessThan(start, end, minAmount);
     }
 
-    public Map<String, Object> getBest24HourPeriodForSeller(Long sellerId){
+    public Map<String, Object> getBestPeriod(Long sellerId, int hours){
         List<Transaction> transactions = transactionRepository.findAllBySellerId(sellerId);
 
         if(transactions.isEmpty()){
@@ -58,7 +58,7 @@ public class TransactionService {
         for(int i = 0; i < transactions.size(); i++){
             double currentWindowSum = 0;
             LocalDateTime windowStart = transactions.get(i).getTransactionDate();
-            LocalDateTime windowEndLimit = windowStart.plusHours(24);
+            LocalDateTime windowEndLimit = windowStart.plusHours(hours);
 
             int j = i;
             while(j < transactions.size() && !transactions.get(j).getTransactionDate().isAfter(windowEndLimit)){
@@ -73,9 +73,10 @@ public class TransactionService {
         }
         Map<String, Object> result = new HashMap<>();
         result.put("sellerId", sellerId);
+        result.put("windowSizeHours", hours);
         result.put("bestPeriodStart", bestStart);
         result.put("bestPeriodEnd", bestEnd);
-        result.put("maxAmountIn24Hours", maxAmount);
+        result.put("maxAmountIn", maxAmount);
 
         return result;
     }

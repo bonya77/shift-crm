@@ -52,8 +52,8 @@ public class TransactioonController {
     }
 
     @GetMapping("/analytics/best-period/{sellerId}")
-    public Map<String, Object> getBestPeriod(@PathVariable Long sellerId){
-        return transactionService.getBest24HourPeriodForSeller(sellerId);
+    public Map<String, Object> getBestPeriod(@PathVariable Long sellerId, @RequestParam(defaultValue = "24") int hours){
+        return transactionService.getBestPeriod(sellerId, hours);
     }
 
 }
