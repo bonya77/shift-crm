@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/transactions")
@@ -48,6 +49,11 @@ public class TransactioonController {
             @RequestParam @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
             @RequestParam java.math.BigDecimal amount) {
         return transactionService.getSellersWithSalesLessThan(start, end, amount);
+    }
+
+    @GetMapping("/analytics/best-period/{sellerId}")
+    public Map<String, Object> getBestPeriod(@PathVariable Long sellerId){
+        return transactionService.getBest24HourPeriodForSeller(sellerId);
     }
 
 }

@@ -22,7 +22,7 @@ public class Seller {
     private Long id;
 
     @Column(nullable = false)
-    private String Name;
+    private String name;
 
     @Column(name = "contact_info")
     private String contactInfo;
