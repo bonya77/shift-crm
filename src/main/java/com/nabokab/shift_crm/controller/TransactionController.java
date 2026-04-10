@@ -13,7 +13,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/transactions")
 @RequiredArgsConstructor
-public class TransactioonController {
+public class TransactionController {
     private final TransactionService transactionService;
 
     @GetMapping
@@ -22,7 +22,7 @@ public class TransactioonController {
     }
 
     @GetMapping("/{id}")
-    public Transaction getTranssactionDyId(@PathVariable Long id){
+    public Transaction getTransactionDyId(@PathVariable Long id){
         return transactionService.getTransactionById(id);
     }
 

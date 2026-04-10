@@ -1,5 +1,6 @@
 package com.nabokab.shift_crm.service;
 
+import com.nabokab.shift_crm.exception.ResourceNotFoundException;
 import com.nabokab.shift_crm.model.Seller;
 import com.nabokab.shift_crm.model.Transaction;
 import com.nabokab.shift_crm.repository.SellerRepository;
@@ -19,8 +20,9 @@ public class SellerService {
         return sellerRepository.findAll();
     }
 
-    public Seller getSellerById(Long id){
-        return sellerRepository.findById(id).orElseThrow(() -> new RuntimeException("Seller with id " + id + " not found"));
+    public Seller getSellerById(Long id) {
+        return sellerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Seller with id" + id + " not found"));
     }
 
     public Seller createSeller(Seller seller){

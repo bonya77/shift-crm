@@ -18,67 +18,68 @@ import java.util.Map;
 public class TransactionService {
     private final TransactionRepository transactionRepository;
 
-    public List<Transaction> getAllTransactions(){
+    public List<Transaction> getAllTransactions() {
         return transactionRepository.findAll();
     }
 
-    public Transaction getTransactionById(Long id){
+    public Transaction getTransactionById(Long id) {
         return transactionRepository.findById(id).orElseThrow(() -> new RuntimeException(("Transaction not found")));
     }
 
-    public Transaction createTransaction(Transaction transaction){
+    public Transaction createTransaction(Transaction transaction) {
         return transactionRepository.save(transaction);
     }
 
-    public List<Transaction> getTransactionBySeller(Long sellerId){
+    public List<Transaction> getTransactionBySeller(Long sellerId) {
         return transactionRepository.findAllBySellerId(sellerId);
     }
 
-    public Seller getMostProductiveSeller(LocalDateTime start, LocalDateTime end){
+    public Seller getMostProductiveSeller(LocalDateTime start, LocalDateTime end) {
         List<Seller> sellers = transactionRepository.findMostProductiveSellers(start, end);
         return sellers.isEmpty() ? null : sellers.getFirst();
     }
-    public List<Seller> getSellersWithSalesLessThan(LocalDateTime start, LocalDateTime end, java.math.BigDecimal minAmount){
+
+    public List<Seller> getSellersWithSalesLessThan(LocalDateTime start, LocalDateTime end, java.math.BigDecimal minAmount) {
         return transactionRepository.findSellersWithSumLessThan(start, end, minAmount);
     }
-
-    public Map<String, Object> getBestPeriod(Long sellerId, int hours){
+    public Map<String, Object> getBestPeriod(Long sellerId, int hours) {
         List<Transaction> transactions = transactionRepository.findAllBySellerId(sellerId);
 
-        if(transactions.isEmpty()){
-            return Map.of("massge", "Seller hasn't transactions");
+        if (transactions.isEmpty()) {
+            return Map.of("message", "Seller hasn't transactions");
         }
 
         transactions.sort(Comparator.comparing(Transaction::getTransactionDate));
 
-        double maxAmount = 0;
+        int maxCount = 0;
         LocalDateTime bestStart = null;
         LocalDateTime bestEnd = null;
 
-        for(int i = 0; i < transactions.size(); i++){
-            double currentWindowSum = 0;
+        for (int i = 0; i < transactions.size(); i++) {
             LocalDateTime windowStart = transactions.get(i).getTransactionDate();
             LocalDateTime windowEndLimit = windowStart.plusHours(hours);
 
             int j = i;
-            while(j < transactions.size() && !transactions.get(j).getTransactionDate().isAfter(windowEndLimit)){
-                currentWindowSum += transactions.get(j).getAmount().doubleValue();
+            while (j < transactions.size() && !transactions.get(j).getTransactionDate().isAfter(windowEndLimit)) {
                 j++;
             }
-            if(currentWindowSum > maxAmount){
-                maxAmount = currentWindowSum;
+
+            int currentCount = j - i;
+
+            if (currentCount > maxCount) {
+                maxCount = currentCount;
                 bestStart = windowStart;
-                bestEnd = transactions.get(j-1).getTransactionDate();
+                bestEnd = transactions.get(j - 1).getTransactionDate();
             }
         }
+
         Map<String, Object> result = new HashMap<>();
         result.put("sellerId", sellerId);
         result.put("windowSizeHours", hours);
         result.put("bestPeriodStart", bestStart);
         result.put("bestPeriodEnd", bestEnd);
-        result.put("maxAmountIn", maxAmount);
+        result.put("transactionCount", maxCount);
 
         return result;
     }
-
 }

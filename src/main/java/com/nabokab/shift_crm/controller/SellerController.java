@@ -32,4 +32,8 @@ public class SellerController {
     public void deleteSeller(@PathVariable Long id){
         sellerService.deleteSeller(id);
     }
+    @PutMapping("/{id}")
+    public Seller updateSeller(@PathVariable Long id, @RequestBody Seller seller) {
+        return sellerService.updateSeller(id, seller);
+    }
 }
